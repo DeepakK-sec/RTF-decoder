@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTF to Plain Text Decoder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .content {
+                flex-direction: row;
+                gap: 20px;
+            }
+        }
+        
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 280px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #3a5ca5, #121f3a);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #4b5563;
+            min-width: 120px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #0da271;
+        }
+        
+        .info-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #1e40af;
+        }
+        
+        .info-box p {
+            margin-bottom: 8px;
+        }
+        
+        .info-box ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RTF to Plain Text Decoder</h1>
+            <p class="subtitle">Convert Rich Text Format to clean, readable plain text</p>
+        </header>
+        
+        <div class="content">
+            <div class="panel">
+                <div class="panel-title">RTF Input</div>
+                <textarea id="rtfInput" placeholder="Paste your RTF content here...&#10;&#10;Example: {\rtf1\ansi\deff0{\fonttbl{\f0 Times New Roman;}}\f0\fs24 Hello {\b world}!}"></textarea>
+                <div class="buttons">
+                    <button class="btn-primary" id="convertBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 3a5 5 0 1 0 0 10A5 5 0 0 0 8 3zm0 1a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/>
+                            <path d="M8 2.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5zM8 12a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 1 0v2a.5.5 0 0 1-.5.5z"/>
+                        </svg>
+                        Convert to Plain Text
+                    </button>
+                    <button class="btn-secondary" id="clearInput">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                        Clear Input
+                    </button>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">Plain Text Output</div>
+                <textarea id="plainOutput" placeholder="Converted plain text will appear here..." readonly></textarea>
+                <div class="buttons">
+                    <button class="btn-success" id="copyOutput">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h5z"/>
+                        </svg>
+                        Copy to Clipboard
+                    </button>
+                    <button class="btn-secondary" id="clearOutput">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                        Clear Output
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <p><strong>How it works:</strong> This tool processes RTF content directly in your browser. No data is sent to any server - your content stays private!</p>
+            <p>Supported RTF features:</p>
+            <ul>
+                <li>Basic text formatting (bold, italic, underline)</li>
+                <li>Font and size information (ignored in plain text output)</li>
+                <li>Paragraph breaks and line breaks</li>
+                <li>Special characters and Unicode</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>RTF to Plain Text Decoder &copy; 2023 | All processing happens locally in your browser</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const rtfInput = document.getElementById('rtfInput');
+        const plainOutput = document.getElementById('plainOutput');
+        const convertBtn = document.getElementById('convertBtn');
+        const clearInputBtn = document.getElementById('clearInput');
+        const clearOutputBtn = document.getElementById('clearOutput');
+        const copyOutputBtn = document.getElementById('copyOutput');
+        
+        // RTF to Plain Text conversion function
+        function rtfToPlainText(rtf) {
+            if (!rtf) return '';
+            
+            // Remove RTF header and control words
+            let plainText = rtf.replace(/\\[^\\{}]+/g, '');
+            
+            // Remove curly braces
+            plainText = plainText.replace(/[{}]/g, '');
+            
+            // Handle special characters
+            plainText = plainText.replace(/\\'([0-9a-fA-F]{2})/g, (match, hex) => {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+            
+            // Handle Unicode characters
+            plainText = plainText.replace(/\\u([0-9]+)(\\'..)?/g, (match, dec) => {
+                return String.fromCharCode(dec);
+            });
+            
+            // Handle line breaks
+            plainText = plainText.replace(/\\par/g, '\n');
+            plainText = plainText.replace(/\\line/g, '\n');
+            
+            // Clean up extra whitespace
+            plainText = plainText.replace(/\n\s*\n/g, '\n\n');
+            plainText = plainText.trim();
+            
+            return plainText;
+        }
+        
+        // Event listeners
+        convertBtn.addEventListener('click', () => {
+            const rtfContent = rtfInput.value;
+            if (rtfContent.trim() === '') {
+                plainOutput.value = '';
+                return;
+            }
+            
+            try {
+                const plainText = rtfToPlainText(rtfContent);
+                plainOutput.value = plainText;
+            } catch (error) {
+                plainOutput.value = `Error converting RTF: ${error.message}`;
+            }
+        });
+        
+        clearInputBtn.addEventListener('click', () => {
+            rtfInput.value = '';
+            rtfInput.focus();
+        });
+        
+        clearOutputBtn.addEventListener('click', () => {
+            plainOutput.value = '';
+        });
+        
+        copyOutputBtn.addEventListener('click', () => {
+            if (plainOutput.value.trim() === '') return;
+            
+            plainOutput.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const originalText = copyOutputBtn.innerHTML;
+            copyOutputBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg> Copied!';
+            
+            setTimeout(() => {
+                copyOutputBtn.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        // Initialize with sample RTF
+        rtfInput.value = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Times New Roman;}}\\f0\\fs24 Hello {\\b world}!\\par\\parThis is a sample RTF document with {\\i formatting} and {\\ul underlines}.\\par\\parSpecial characters: \\u230?\\u231?\\u232?\\u233?\\u234?}";
+    </script>
+</body>
+</html>
